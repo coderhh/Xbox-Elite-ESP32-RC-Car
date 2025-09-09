@@ -37,9 +37,8 @@ void MotorController::initialize() {
 
 void MotorController::setupPWM(int pin, int channel) {
 #ifndef UNIT_TEST
-    // Compatible with both old and new ESP32 Arduino Core
-    ledcSetup(channel, PWM_FREQUENCY, PWM_RESOLUTION);
-    ledcAttachPin(pin, channel);
+    // Updated for newer ESP32 Arduino Core
+    ledcAttach(pin, PWM_FREQUENCY, PWM_RESOLUTION);
 #endif
 }
 
@@ -71,7 +70,7 @@ void MotorController::setMotor(const MotorPins& pins, MotorState& state, int spe
 
 #ifndef UNIT_TEST
     // Set PWM speed
-    ledcWrite(pins.pwmChannel, speed);
+    ledcWrite(pins.enablePin, speed);
     
     // Set direction
     if (direction) {
@@ -86,8 +85,8 @@ void MotorController::setMotor(const MotorPins& pins, MotorState& state, int spe
 
 void MotorController::stopAllMotors() {
 #ifndef UNIT_TEST
-    ledcWrite(leftMotorPins.pwmChannel, 0);
-    ledcWrite(rightMotorPins.pwmChannel, 0);
+    ledcWrite(leftMotorPins.enablePin, 0);
+    ledcWrite(rightMotorPins.enablePin, 0);
     
     digitalWrite(leftMotorPins.input1Pin, LOW);
     digitalWrite(leftMotorPins.input2Pin, LOW);

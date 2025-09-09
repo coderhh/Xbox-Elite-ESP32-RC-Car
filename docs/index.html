@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xbox Elite ESP32 Two-Wheel Balance Robot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="hero">
+        <div class="container">
+            <h1><i class="fas fa-robot"></i> Xbox Elite ESP32 Two-Wheel Balance Robot</h1>
+            <p class="subtitle">Advanced self-balancing robot controlled by Xbox Elite controller using ESP32, PID control, and sensor fusion</p>
+            <div class="hero-buttons">
+                <a href="#features" class="btn btn-primary">View Features</a>
+                <a href="https://github.com/coderhh/Xbox-Elite-ESP32-RC-Car" class="btn btn-secondary" target="_blank">
+                    <i class="fab fa-github"></i> View on GitHub
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <nav class="navbar">
+        <div class="container">
+            <ul>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#hardware">Hardware</a></li>
+                <li><a href="#software">Software</a></li>
+                <li><a href="#balance">Balance Control</a></li>
+                <li><a href="#documentation">Documentation</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section id="features" class="section">
+            <div class="container">
+                <h2><i class="fas fa-star"></i> Key Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-robot"></i>
+                        <h3>Self-Balancing</h3>
+                        <p>Advanced PID control algorithms for stable balance with ±1° precision</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-gamepad"></i>
+                        <h3>Xbox Elite Controller</h3>
+                        <p>Full support for Xbox Elite controller with customizable paddles and triggers</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-microchip"></i>
+                        <h3>ESP32 Platform</h3>
+                        <p>Powerful ESP32 microcontroller with WiFi and Bluetooth capabilities</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Safety Systems</h3>
+                        <p>Comprehensive safety features including fall detection and emergency stop</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-satellite-dish"></i>
+                        <h3>Sensor Fusion</h3>
+                        <p>IMU and encoder data fusion for precise balance control and movement</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <h3>Real-time Control</h3>
+                        <p>100Hz control loop with sub-20ms response time for ultra-responsive control</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="hardware" class="section bg-light">
+            <div class="container">
+                <h2><i class="fas fa-microchip"></i> Hardware Requirements</h2>
+                <div class="hardware-grid">
+                    <div class="hardware-item">
+                        <h3>Main Controller</h3>
+                        <ul>
+                            <li>ESP32 Development Board</li>
+                            <li>Xbox Elite Controller</li>
+                            <li>Dual H-Bridge Motor Driver</li>
+                        </ul>
+                    </div>
+                    <div class="hardware-item">
+                        <h3>Balance System</h3>
+                        <ul>
+                            <li>MPU6050 IMU Sensor</li>
+                            <li>High-Torque DC Motors (2x)</li>
+                            <li>Rotary Encoders (2x)</li>
+                        </ul>
+                    </div>
+                    <div class="hardware-item">
+                        <h3>Power & Safety</h3>
+                        <ul>
+                            <li>11.1V Li-Po Battery (3S)</li>
+                            <li>Voltage regulator</li>
+                            <li>Emergency stop system</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <a href="WIRING.md" class="btn btn-outline">View Wiring Guide</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="software" class="section">
+            <div class="container">
+                <h2><i class="fas fa-code"></i> Software Architecture</h2>
+                <div class="software-overview">
+                    <div class="architecture-diagram">
+                        <div class="component">
+                            <i class="fas fa-gamepad"></i>
+                            <span>Xbox Elite Controller</span>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="component">
+                            <i class="fas fa-bluetooth"></i>
+                            <span>Bluepad32</span>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="component">
+                            <i class="fas fa-microchip"></i>
+                            <span>ESP32</span>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="component">
+                            <i class="fas fa-robot"></i>
+                            <span>Balance Controller</span>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="component">
+                            <i class="fas fa-cogs"></i>
+                            <span>Motor Controller</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-features">
+                    <div class="code-feature">
+                        <h3><i class="fas fa-shield-alt"></i> Safety System</h3>
+                        <p>Real-time safety monitoring with fall detection and emergency stop</p>
+                    </div>
+                    <div class="code-feature">
+                        <h3><i class="fas fa-robot"></i> Balance Control</h3>
+                        <p>Advanced PID algorithms with sensor fusion for stable balance</p>
+                    </div>
+                    <div class="code-feature">
+                        <h3><i class="fas fa-satellite-dish"></i> Sensor Integration</h3>
+                        <p>IMU and encoder data processing for precise control</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="balance" class="section">
+            <div class="container">
+                <h2><i class="fas fa-robot"></i> Balance Control System</h2>
+                <div class="balance-features">
+                    <div class="balance-feature">
+                        <h3><i class="fas fa-chart-line"></i> PID Control</h3>
+                        <p>Advanced PID algorithms maintain balance with ±1° precision using real-time sensor feedback</p>
+                    </div>
+                    <div class="balance-feature">
+                        <h3><i class="fas fa-satellite-dish"></i> Sensor Fusion</h3>
+                        <p>IMU accelerometer and gyroscope data combined with encoder feedback for precise control</p>
+                    </div>
+                    <div class="balance-feature">
+                        <h3><i class="fas fa-tachometer-alt"></i> Real-time Performance</h3>
+                        <p>100Hz control loop with sub-20ms response time for ultra-responsive balance control</p>
+                    </div>
+                    <div class="balance-feature">
+                        <h3><i class="fas fa-shield-alt"></i> Fall Detection</h3>
+                        <p>Automatic shutdown if robot tilts beyond ±30° recovery angle for safety</p>
+                    </div>
+                </div>
+                <div class="balance-specs">
+                    <h3>Technical Specifications</h3>
+                    <div class="specs-grid">
+                        <div class="spec-item">
+                            <strong>Control Frequency:</strong> 100Hz (10ms update rate)
+                        </div>
+                        <div class="spec-item">
+                            <strong>Balance Stability:</strong> ±1° tilt angle maintenance
+                        </div>
+                        <div class="spec-item">
+                            <strong>Response Latency:</strong> <20ms for control inputs
+                        </div>
+                        <div class="spec-item">
+                            <strong>IMU Update Rate:</strong> 100Hz sensor sampling
+                        </div>
+                        <div class="spec-item">
+                            <strong>Encoder Resolution:</strong> 360 pulses per revolution
+                        </div>
+                        <div class="spec-item">
+                            <strong>Battery Life:</strong> 2+ hours continuous operation
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="documentation" class="section bg-light">
+            <div class="container">
+                <h2><i class="fas fa-book"></i> Documentation</h2>
+                <div class="docs-grid">
+                    <div class="doc-card">
+                        <i class="fas fa-tools"></i>
+                        <h3>Setup Guide</h3>
+                        <p>Complete setup instructions for hardware and software</p>
+                        <a href="README.md" class="btn btn-small">View Guide</a>
+                    </div>
+                    <div class="doc-card">
+                        <i class="fas fa-plug"></i>
+                        <h3>Wiring Diagram</h3>
+                        <p>Detailed wiring instructions and circuit diagrams</p>
+                        <a href="WIRING.md" class="btn btn-small">View Wiring</a>
+                    </div>
+                    <div class="doc-card">
+                        <i class="fas fa-vial"></i>
+                        <h3>Testing Guide</h3>
+                        <p>How to run tests and validate your setup</p>
+                        <a href="TEST.md" class="btn btn-small">View Tests</a>
+                    </div>
+                    <div class="doc-card">
+                        <i class="fas fa-code"></i>
+                        <h3>API Reference</h3>
+                        <p>Complete API documentation for all components</p>
+                        <a href="https://github.com/coderhh/Xbox-Elite-ESP32-RC-Car/tree/main/include" class="btn btn-small" target="_blank">View API</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gallery" class="section">
+            <div class="container">
+                <h2><i class="fas fa-images"></i> Project Gallery</h2>
+                <div class="gallery-placeholder">
+                    <div class="gallery-item">
+                        <i class="fas fa-image"></i>
+                        <p>Hardware Setup</p>
+                    </div>
+                    <div class="gallery-item">
+                        <i class="fas fa-image"></i>
+                        <p>Controller Integration</p>
+                    </div>
+                    <div class="gallery-item">
+                        <i class="fas fa-image"></i>
+                        <p>Final Assembly</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Xbox Elite ESP32 Two-Wheel Balance Robot</h3>
+                    <p>Open-source self-balancing robot project with Xbox Elite controller integration</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Links</h3>
+                    <ul>
+                        <li><a href="https://github.com/coderhh/Xbox-Elite-ESP32-RC-Car">GitHub Repository</a></li>
+                        <li><a href="https://github.com/coderhh/Xbox-Elite-ESP32-RC-Car/issues">Report Issues</a></li>
+                        <li><a href="https://github.com/coderhh/Xbox-Elite-ESP32-RC-Car/discussions">Discussions</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Technologies</h3>
+                    <ul>
+                        <li>ESP32</li>
+                        <li>Bluepad32</li>
+                        <li>MPU6050 IMU</li>
+                        <li>PID Control</li>
+                        <li>PlatformIO</li>
+                        <li>C++</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Xbox Elite ESP32 Two-Wheel Balance Robot Project. Open source under MIT License.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

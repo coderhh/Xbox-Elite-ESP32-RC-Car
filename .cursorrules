@@ -1,0 +1,278 @@
+# Xbox Elite ESP32 Two-Wheel Balance Robot - Cursor Rules
+
+## Project Overview
+This is a production-ready embedded IoT project that creates a two-wheel self-balancing robot controlled by an Xbox Elite Series 2 controller via Bluetooth through an ESP32 microcontroller. The system features advanced PID balance control algorithms, real-time sensor fusion, and comprehensive safety systems.
+
+## Architecture & Design Patterns
+
+### Core Components
+- **RCCarSystem**: Main orchestrator managing all subsystems (400+ lines)
+- **MotorController**: PWM motor control with safety limits (180+ lines)
+- **SafetySystem**: Arm/disarm states, emergency stop, fall detection (150+ lines)
+- **ControllerProcessor**: Xbox controller input processing (160+ lines)
+- **GamepadInterface**: Bluetooth controller interface using Bluepad32 (110+ lines)
+- **BalanceController**: PID balance control algorithms and sensor fusion (200+ lines)
+- **IMUController**: MPU6050 sensor management and data processing (150+ lines)
+- **EncoderController**: Wheel encoder feedback and position tracking (120+ lines)
+
+### Design Patterns
+- **Dependency Injection**: Components accept interfaces for testing
+- **Hardware Abstraction**: Mock objects enable testing without hardware
+- **Single Responsibility**: Each class has focused purpose
+- **State Machine**: SafetySystem manages Armed/Disarmed/Emergency/Fallen states
+- **Control Loop Pattern**: BalanceController implements real-time PID control
+- **Sensor Fusion**: IMUController combines accelerometer and gyroscope data
+- **Observer Pattern**: EncoderController provides position feedback
+
+## Technology Stack
+
+### Hardware Platform
+- **ESP32** with PlatformIO framework
+- **Bluepad32 library** (v3.10.3+) for Xbox controller communication
+- **Dual H-Bridge motor driver** (L298N/DRV8833) controlled via PWM
+- **MPU6050 IMU sensor** for balance feedback via I2C
+- **Rotary encoders** for wheel position feedback
+- **Unity framework** for embedded testing
+
+### Key Libraries
+- Bluepad32 v3.10.3+ (Xbox controller communication)
+- MPU6050 library (IMU sensor management)
+- PID library (balance control algorithms)
+- Encoder library (wheel position feedback)
+- ESP32Servo v0.13.0+ (if using servo-based features)
+
+## Code Standards & Best Practices
+
+### File Organization
+- All headers in `include/` directory
+- All implementations in `src/` directory
+- Test files mirror source structure in `test/` directory
+- Configuration constants centralized in `include/config.h`
+- Mock objects in `test/mocks/` for hardware abstraction
+
+### Naming Conventions
+- **Classes**: PascalCase (e.g., `BalanceController`, `IMUController`)
+- **Functions**: camelCase (e.g., `processControllerInput`, `updateBalance`)
+- **Variables**: camelCase (e.g., `motorSpeed`, `tiltAngle`)
+- **Constants**: UPPER_SNAKE_CASE (e.g., `MAX_SPEED`, `BALANCE_KP`)
+- **Files**: PascalCase for classes (e.g., `BalanceController.cpp`)
+
+### Code Quality Standards
+- **Production-ready code**: No TODO comments, complete error handling
+- **Comprehensive testing**: Unit tests for all components
+- **Hardware abstraction**: Mock objects for testing without hardware
+- **Safety first**: Multiple fail-safes and safety systems
+- **Real-time performance**: Sub-20ms response time requirements
+- **Modular design**: Easy to extend and maintain
+
+## Hardware Interface Specifications
+
+### Pin Assignments
+```
+Motor Control:
+- GPIO 13: Motor A Enable (PWM) - Left Motor
+- GPIO 5:  Motor A Input 1
+- GPIO 4:  Motor A Input 2
+- GPIO 14: Motor B Enable (PWM) - Right Motor
+- GPIO 27: Motor B Input 1
+- GPIO 26: Motor B Input 2
+
+IMU Sensor (MPU6050):
+- GPIO 21: SDA (I2C Data)
+- GPIO 22: SCL (I2C Clock)
+- GPIO 19: INT (Interrupt)
+
+Encoders:
+- GPIO 18: Left Encoder A
+- GPIO 19: Left Encoder B
+- GPIO 16: Right Encoder A
+- GPIO 17: Right Encoder B
+
+Status & Feedback:
+- GPIO 2:  Status LED (built-in)
+- GPIO 23: Buzzer
+- GPIO 25: External LED
+- GPIO 33: Battery voltage monitoring
+```
+
+### Performance Requirements
+- **Control Frequency**: 100Hz PID loop (10ms update rate)
+- **Response Latency**: <20ms for control inputs
+- **Balance Stability**: ±1° tilt angle maintenance
+- **IMU Update Rate**: 100Hz sensor sampling
+- **Encoder Resolution**: 360 pulses per revolution
+
+## Development Workflow
+
+### Essential Commands
+```bash
+# Build and upload to ESP32
+pio run -t upload
+
+# Monitor serial output
+pio device monitor
+
+# Build, upload, and monitor (combined)
+make upload-monitor
+make um  # shortcut
+
+# Run all tests
+pio test -e native -v
+make test
+
+# Pre-commit validation
+make pre-commit
+
+# Format code
+make format
+```
+
+### Testing Strategy
+- **Native tests**: Fast host-machine execution without hardware
+- **Hardware tests**: ESP32-specific testing when device connected
+- **Mocked dependencies**: Arduino and Bluepad32 APIs fully mocked
+- **Integration tests**: Complete balance control workflows
+- **Performance tests**: Real-time control loop validation
+
+## Safety & Reliability
+
+### Safety Features
+- **Arm/Disarm mechanism**: Prevents accidental motor activation
+- **Emergency stop**: Immediate motor shutdown capability
+- **Fall detection**: Automatic shutdown if robot tilts beyond recovery angle (±30°)
+- **Watchdog timer**: 2-second timeout stops motors on connection loss
+- **IMU failure detection**: Backup balance algorithms if sensor fails
+- **Power monitoring**: Low battery detection and safe shutdown
+
+### Error Handling
+- **Graceful degradation**: System continues operating with reduced functionality
+- **Comprehensive logging**: Detailed error messages for debugging
+- **Recovery procedures**: Automatic recovery from common failure modes
+- **Fail-safe defaults**: Safe states for all critical systems
+
+## Balance Control System
+
+### PID Control Parameters
+```cpp
+// Balance Control Parameters
+#define BALANCE_KP 15.0       // Proportional gain for balance PID
+#define BALANCE_KI 0.1        // Integral gain for balance PID
+#define BALANCE_KD 0.5        // Derivative gain for balance PID
+#define MAX_TILT_ANGLE 30.0   // Maximum tilt angle before fall detection
+
+// IMU Settings
+#define IMU_UPDATE_RATE 100   // IMU update frequency (Hz)
+#define CALIBRATION_SAMPLES 1000 // Number of samples for IMU calibration
+```
+
+### Control Algorithm
+- **Complementary Filter**: Combines accelerometer and gyroscope data
+- **PID Controller**: Maintains balance with configurable gains
+- **Sensor Fusion**: IMU data combined with encoder feedback
+- **Adaptive Control**: Dynamic parameter adjustment based on conditions
+
+## Xbox Controller Mapping
+
+### Control Layout
+- **Left Analog Stick**: Y-axis (forward/backward), X-axis (left/right turning)
+- **Right Analog Stick**: Y-axis (fine balance adjustment)
+- **Triggers**: RT (speed modulation), LT (reverse speed control)
+- **Face Buttons**: A (arm/disarm), B (emergency stop), X (balance mode), Y (IMU calibration)
+
+### System States
+- **Disconnected**: No controller connected
+- **Connected, Disarmed**: Controller connected but system disarmed
+- **Connected, Armed**: Ready for operation
+- **Active**: Balance system active and stable
+- **Emergency Stop**: System in emergency stop mode
+- **Fall Detection**: Robot has fallen, needs manual reset
+- **IMU Calibration**: Calibrating sensors
+
+## Development Guidelines
+
+### Code Organization
+- **Modular architecture**: Each component has single responsibility
+- **Interface-based design**: Easy to mock and test
+- **Configuration-driven**: All parameters in config.h
+- **Error handling**: Comprehensive error checking and recovery
+
+### Testing Requirements
+- **Unit tests**: All public methods must have tests
+- **Integration tests**: End-to-end workflow validation
+- **Hardware tests**: Real hardware validation when available
+- **Performance tests**: Real-time requirements validation
+
+### Documentation Standards
+- **Code comments**: Explain complex algorithms and safety-critical code
+- **API documentation**: All public methods documented
+- **User guides**: Complete setup and operation instructions
+- **Troubleshooting**: Common issues and solutions
+
+## Performance Optimization
+
+### Real-time Requirements
+- **Control loop**: Must complete within 10ms (100Hz)
+- **Sensor reading**: IMU data processed at 100Hz
+- **Motor control**: PWM updates at 1kHz
+- **Communication**: Bluetooth latency <20ms
+
+### Memory Management
+- **Stack usage**: Monitor stack usage in real-time loops
+- **Heap allocation**: Minimize dynamic allocation
+- **Buffer management**: Efficient sensor data buffering
+- **Cache optimization**: Optimize for ESP32 cache behavior
+
+## Quality Assurance
+
+### Code Review Checklist
+- [ ] All safety systems implemented and tested
+- [ ] Real-time performance requirements met
+- [ ] Comprehensive error handling
+- [ ] Unit tests for all components
+- [ ] Hardware abstraction for testing
+- [ ] Documentation complete and accurate
+- [ ] Performance benchmarks validated
+
+### Pre-commit Validation
+- [ ] All tests pass
+- [ ] Code formatting applied
+- [ ] Linting errors resolved
+- [ ] Performance benchmarks met
+- [ ] Safety systems validated
+
+## Future Enhancements
+
+### Planned Features
+- FPV camera system with live streaming
+- Ultrasonic obstacle detection and avoidance
+- Autonomous navigation with SLAM
+- Web-based control interface
+- Voice control integration
+- Machine learning for adaptive PID tuning
+
+### Hardware Upgrades
+- LiDAR sensor for advanced mapping
+- Additional IMU sensors for redundancy
+- OLED display for real-time status
+- Bluetooth speaker for audio feedback
+- Battery level monitoring with telemetry
+
+## Support & Maintenance
+
+### Troubleshooting
+- Check IMU sensor connections and calibration
+- Verify encoder functionality and mounting
+- Monitor system performance and temperature
+- Validate power supply and connections
+- Review serial monitor output for errors
+
+### Regular Maintenance
+- Recalibrate IMU sensors periodically
+- Clean encoder sensors from dust
+- Check all connections for looseness
+- Monitor battery voltage and charging
+- Update software and libraries regularly
+
+---
+
+**Note**: This is a production-ready embedded system with real-time safety requirements. Always test in safe, open areas with adequate space for balance robot operation. The robot can move quickly and may fall over during testing - use appropriate safety precautions.
