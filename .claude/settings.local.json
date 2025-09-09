@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pio test:*)",
+      "Bash(python3 -m pip install platformio)",
+      "Bash(pio run:*)",
+      "Bash(pio pkg install:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

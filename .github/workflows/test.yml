@@ -1,0 +1,108 @@
+name: Automated Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Cache PlatformIO
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/pip
+          ~/.platformio
+        key: ${{ runner.os }}-platformio-${{ hashFiles('**/platformio.ini') }}
+        restore-keys: |
+          ${{ runner.os }}-platformio-
+          
+    - name: Install PlatformIO
+      run: |
+        python -m pip install --upgrade pip
+        pip install platformio
+        
+    - name: Install project dependencies
+      run: pio pkg install
+      
+    - name: Run unit tests
+      run: pio test -e native -v
+      
+    - name: Build for ESP32
+      run: pio run -e esp32dev
+      
+    - name: Check code compilation
+      run: pio check --skip-packages
+      
+  code-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install PlatformIO
+      run: |
+        python -m pip install --upgrade pip
+        pip install platformio
+        
+    - name: Run static analysis
+      run: pio check --skip-packages --fail-on-defect medium
+      
+  test-report:
+    runs-on: ubuntu-latest
+    needs: test
+    if: always()
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install PlatformIO
+      run: |
+        python -m pip install --upgrade pip
+        pip install platformio
+        
+    - name: Generate test report
+      run: |
+        echo "# Test Report" > test-report.md
+        echo "## Test Execution Summary" >> test-report.md
+        echo "- Date: $(date)" >> test-report.md
+        echo "- Commit: ${{ github.sha }}" >> test-report.md
+        echo "- Branch: ${{ github.ref_name }}" >> test-report.md
+        echo "" >> test-report.md
+        pio test -e native --json-output > test-results.json 2>&1 || true
+        echo "## Test Results" >> test-report.md
+        echo '```json' >> test-report.md
+        cat test-results.json >> test-report.md
+        echo '```' >> test-report.md
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-report
+        path: |
+          test-report.md
+          test-results.json
